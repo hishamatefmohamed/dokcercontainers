@@ -3,6 +3,7 @@ services:
   db:
     image: postgres
     restart: always
+
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -10,6 +11,18 @@ services:
       - '5432:5432'
     volumes: 
       - db:/var/lib/postgresql/data
+
+
+  jenkins:
+    image: jenkins/jenkins
+    restart: always
+    ports: 
+      - '8080:8080'
+    volumes:
+      - data-jenkins:/var/lib/jenkins    
+
 volumes:
   db:
+    driver: local
+  jenkins:
     driver: local
