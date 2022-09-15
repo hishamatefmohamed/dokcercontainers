@@ -7,22 +7,28 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      -POSTGRES_DB=POSTGRES_DB
     ports:
       - '5432:5432'
     volumes: 
       - db:/var/lib/postgresql/data
 
 
-  jenkins:
-    image: jenkins/jenkins
+  wordpress:
+    image: wordpress
     restart: always
-    ports: 
-      - '8080:8080'
+    ports:
+      - 8080:80
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: postgres
+      WORDPRESS_DB_PASSWORD: postgres
+      WORDPRESS_DB_NAME: POSTGRES_DB
     volumes:
-      - data-jenkins:/var/lib/jenkins    
+      - wordpress:/var/www/html
+
 
 volumes:
   db:
-    driver: local
-  jenkins:
-    driver: local
+  wordpress:
+    
