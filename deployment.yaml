@@ -4,11 +4,11 @@ metadata:
   name:  mongo
   namespace: default
   labels:
-    app:  MYAPP
+    app:  mongo-express
 spec:
   selector:
     matchLabels:
-      app: MYAPP
+      app: mongo-express
   replicas: 1
   strategy:
     rollingUpdate:
@@ -18,14 +18,14 @@ spec:
   template:
     metadata:
       labels:
-        app:  MYAPP
+        app:  mongo-express
     spec:
       # initContainers:
         # Init containers are exactly like regular containers, except:
           # - Init containers always run to completion.
           # - Each init container must complete successfully before the next one starts.
       containers:
-      - name:  MYAPP
+      - name:  mongo-express
         image:  mongo-express:latest
         resources:
           requests:
@@ -66,19 +66,10 @@ spec:
 
         ports:
         - containerPort:  80
-          name:  MYAPP
+          name:  mongo-express
         volumeMounts:
         - name: localtime
           mountPath: /etc/localtime
-    
-    -name:
-
-
-
-
-
-
-
 
       volumes:
         - name: localtime
