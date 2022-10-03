@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name:  postgres
+  name:  mongo
   namespace: default
   labels:
-    app:  postgres
+    app:  mongo
 spec:
   selector:
     matchLabels:
-      app: postgres
+      app: mongo
   replicas: 1
   strategy:
     rollingUpdate:
@@ -18,15 +18,15 @@ spec:
   template:
     metadata:
       labels:
-        app:  postgres
+        app:  mongo
     spec:
       # initContainers:
         # Init containers are exactly like regular containers, except:
           # - Init containers always run to completion.
           # - Each init container must complete successfully before the next one starts.
       containers:
-      - name:  postgres
-        image:  postgres
+      - name: mongo
+        image:  mongo:latest
         resources:
           requests:
             cpu: 100m
@@ -36,7 +36,7 @@ spec:
             memory: 100Mi
         livenessProbe:
           tcpSocket:
-            port: 5432
+            port: 80
           initialDelaySeconds: 5
           timeoutSeconds: 5
           successThreshold: 1
@@ -45,34 +45,34 @@ spec:
         readinessProbe:
           httpGet:
             path: /_status/healthz
-            port: 5432
+            port: 80
           initialDelaySeconds: 5
           timeoutSeconds: 2
           successThreshold: 1
           failureThreshold: 3
           periodSeconds: 10
         env:
-        - name: ME_CONFIG_BASICAUTH_USERNAME
+        - name: MONGO_INITDB_ROOT_USERNAME
           valueFrom:
             secretKeyRef:
               name: secret
-              key: ME_CONFIG_BASICAUTH_USERNAME
+              key: MONGO_INITDB_ROOT_USERNAME
 
-        - name: POSTGRES_PASSWORD
+        - name: MONGO_INITDB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: secret
-              key: POSTGRES_PASSWORD
+              key: MONGO_INITDB_ROOT_PASSWORD
 
         ports:
-        - containerPort:  5432
-          name:  mongo-express
+        - containerPort:  80
+          name:  mongo
         volumeMounts:
-        - name: db
-          mountPath: /var/lib/postgresql/data
+        - name: localtime
+          mountPath: /etc/localtime
 
       volumes:
-        - name: db
+        - name: localtime
           hostPath:
             path: /usr/share/zoneinfo/Asia/Shanghai
       restartPolicy: Always
