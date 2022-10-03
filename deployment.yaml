@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name:  mongo
+  name:  postgres
   namespace: default
   labels:
-    app:  mongo-express
+    app:  postgres
 spec:
   selector:
     matchLabels:
-      app: mongo-express
+      app: postgres
   replicas: 1
   strategy:
     rollingUpdate:
@@ -18,15 +18,15 @@ spec:
   template:
     metadata:
       labels:
-        app:  mongo-express
+        app:  postgres
     spec:
       # initContainers:
         # Init containers are exactly like regular containers, except:
           # - Init containers always run to completion.
           # - Each init container must complete successfully before the next one starts.
       containers:
-      - name:  mongo-express
-        image:  mongo-express:latest
+      - name:  postgres
+        image:  postgres
         resources:
           requests:
             cpu: 100m
@@ -36,7 +36,7 @@ spec:
             memory: 100Mi
         livenessProbe:
           tcpSocket:
-            port: 80
+            port: 5432
           initialDelaySeconds: 5
           timeoutSeconds: 5
           successThreshold: 1
@@ -45,7 +45,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /_status/healthz
-            port: 80
+            port: 5432
           initialDelaySeconds: 5
           timeoutSeconds: 2
           successThreshold: 1
@@ -58,21 +58,21 @@ spec:
               name: secret
               key: ME_CONFIG_BASICAUTH_USERNAME
 
-        - name: ME_CONFIG_BASICAUTH_PASSWORD
+        - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
               name: secret
-              key: ME_CONFIG_BASICAUTH_PASSWORD
+              key: POSTGRES_PASSWORD
 
         ports:
-        - containerPort:  80
+        - containerPort:  5432
           name:  mongo-express
         volumeMounts:
-        - name: localtime
-          mountPath: /etc/localtime
+        - name: db
+          mountPath: /var/lib/postgresql/data
 
       volumes:
-        - name: localtime
+        - name: db
           hostPath:
             path: /usr/share/zoneinfo/Asia/Shanghai
       restartPolicy: Always
