@@ -1,46 +1,37 @@
+--- 
 apiVersion: apps/v1
 kind: Deployment
-metadata:
+metadata: 
+  labels: 
+    app: mongodb-nana
   name: mongodb-deployment
-  labels:
-    app: mongodb-nana
-spec:
+spec: 
   replicas: 1
-  selector:
-    matchLabels:
+  selector: 
+    matchLabels: 
       app: mongodb-nana
-  template:
-    metadata:
-      labels:
+  template: 
+    metadata: 
+      labels: 
         app: mongodb-nana
-    spec:
-      containers:
-      - name: mongodb-nana
-      image: mongo
-      ports:
-          - containerPort: 27017
-      env:
-         - name: MONGO_INITDB_ROOT_USERNAME
-           valueFrom:
-             secretKeyRef:
-              name: mysecret
+    spec: 
+      containers: 
+        - 
+          name: mongodb-nana
+      env: 
+        - 
+          name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom: 
+            secretKeyRef: 
               key: MONGO_INITDB_ROOT_USERNAME
-
-         - name: MONGO_INITDB_ROOT_PASSWORD
-           valueFrom:
-               secretKeyRef:
-                name: mysecret
-                key: MONGO_INITDB_ROOT_PASSWORD
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mongodb-nana-service
-spec:
-  selector:
-    app: mongodb-nana
-  ports:
-    - protocol: TCP
-      port: 27017
-      targetPort: 27017
+              name: mysecret
+        - 
+          name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom: 
+            secretKeyRef: 
+              key: MONGO_INITDB_ROOT_PASSWORD
+              name: mysecret
+      image: mongo
+      ports: 
+        - 
+          containerPort: 27017
