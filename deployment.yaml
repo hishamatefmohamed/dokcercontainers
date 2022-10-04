@@ -28,12 +28,12 @@ spec:
       - name: mongo
         image:  mongo:latest
         resources:
-          requests:
-            cpu: 100m
-            memory: 100Mi
-          limits:
-            cpu: 100m
-            memory: 100Mi
+          # requests:
+          #   cpu: 100m
+          #   memory: 100Mi
+          # limits:
+          #   cpu: 100m
+          #   memory: 100Mi
         livenessProbe:
           tcpSocket:
             port: 80
@@ -76,3 +76,99 @@ spec:
           hostPath:
             path: /usr/share/zoneinfo/Asia/Shanghai
       restartPolicy: Always
+      
+
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:   mongo-express
+  namespace: default
+  labels:
+    app:  mongo-express
+spec:
+  selector:
+    matchLabels:
+      app:  mongo-express
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app:   mongo-express
+    spec:
+      # initContainers:
+        # Init containers are exactly like regular containers, except:
+          # - Init containers always run to completion.
+          # - Each init container must complete successfully before the next one starts.
+      containers:
+      - name:  mongo-express
+        image:  mongo-express
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+        livenessProbe:
+          tcpSocket:
+            port: 8081 
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /_status/healthz
+            port: 8081 
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+          successThreshold: 1
+          failureThreshold: 3
+          periodSeconds: 10
+        env:
+        - name: ME_CONFIG_BASICAUTH_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: ME_CONFIG_BASICAUTH_USERNAME
+
+        - name: ME_CONFIG_BASICAUTH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: ME_CONFIG_BASICAUTH_PASSWORD
+
+        - name: ME_CONFIG_MONGODB_ADMINUSERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: ME_CONFIG_MONGODB_ADMINUSERNAME
+
+        - name: ME_CONFIG_MONGODB_ADMINPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: ME_CONFIG_MONGODB_ADMINPASSWORD
+
+        ports:
+        - containerPort:  8081 
+          name:   mongo-express
+        volumeMounts:
+        - name: localtime
+          mountPath: /etc/localtime
+
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Shanghai
+      restartPolicy: Always
+      
