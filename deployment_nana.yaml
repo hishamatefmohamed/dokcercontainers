@@ -32,6 +32,27 @@ spec:
             secretKeyRef:
               key: MYSQL_PASSWORD
               name: mysecret
+
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: MYSQL_ROOT_PASSWORD
+              name: mysecret
+
+
+
+        - name: MYSQL_ALLOW_EMPTY_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: MYSQL_ALLOW_EMPTY_PASSWORD
+              name: mysecret
+
+
+        - name: MYSQL_RANDOM_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: MYSQL_RANDOM_ROOT_PASSWORD
+              name: mysecret
 ---
 apiVersion: apps/v1
 kind: Deployment
