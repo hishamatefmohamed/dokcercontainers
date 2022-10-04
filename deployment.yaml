@@ -24,12 +24,6 @@ spec:
       - name: mongo
         image:  mongo
         resources:
-          # requests:
-          #   cpu: 100m
-          #   memory: 100Mi
-          # limits:
-          #   cpu: 100m
-          #   memory: 100Mi
         livenessProbe:
           tcpSocket:
             port: 80
