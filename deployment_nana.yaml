@@ -36,34 +36,40 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongo
+  name: wordpress
 spec:
   selector:
     matchLabels:
-      app: mongo
+      app: wordpress
   template:
     metadata:
       labels:
-        app: mongo
+        app: wordpress
     spec:
       containers:
-      - name: mongo
-        image: mongo
+      - name: wordpress
+        image: wordpress
         resources:
           limits:
             memory: "128Mi"
             cpu: "500m"
         ports:
-        - containerPort: 27017
+        - containerPort: 80
         env:
-        - name: MONGO_INITDB_ROOT_USERNAME
+        - name: WORDPRESS_DB_USER
           valueFrom:
             secretKeyRef:
-              key: MONGO_INITDB_ROOT_USERNAME
+              key: WORDPRESS_DB_USER
               name: mysecret
 
-        - name: MONGO_INITDB_ROOT_PASSWORD
+        - name: WORDPRESS_DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              key: MONGO_INITDB_ROOT_PASSWORD
+              key: WORDPRESS_DB_PASSWORD
+              name: mysecret
+            
+        - name: WORDPRESS_DB_NAME
+          valueFrom:
+            secretKeyRef:
+              key: WORDPRESS_DB_NAME
               name: mysecret
