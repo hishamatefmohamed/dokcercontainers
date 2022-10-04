@@ -72,4 +72,4 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: WORDPRESS_DB_NAME
-              name: ConfigMap
+              name: configmap
