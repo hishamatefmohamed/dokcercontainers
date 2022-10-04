@@ -5,3 +5,4 @@ metadata:
   namespace: default
 data:
   WORDPRESS_DB_NAME: mysql  
+  WORDPRESS_DB_HOST: db
