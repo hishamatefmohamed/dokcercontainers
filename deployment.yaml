@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: mongo
-        image:  mongo:latest
+        image:  mongo
         resources:
           # requests:
           #   cpu: 100m
